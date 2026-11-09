@@ -25,8 +25,8 @@ MAX_TOTAL = 64 << 20
 MAX_TEXT = 1 << 20
 MAX_SOUND = 1 << 20
 
-ICON_SIZE = (256, 256)
-PREVIEW_SIZE = (1600, 1000)
+ICON_SIZE = 64
+PREVIEW_SIZE = (960, 600)
 ZIP_TIME = (1980, 1, 1, 0, 0, 0)
 
 warnings = []
@@ -108,21 +108,39 @@ def optimize_jpeg(path, lossy):
         subprocess.run(args, check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
 
-def catalog_image(source, work, limit):
+def catalog_preview(source, work):
     with Image.open(source) as image:
         image.load()
-        jpeg = image.format == "JPEG"
-        if image.mode == "P":
-            image = image.convert("RGBA")
-        if image.width > limit[0] or image.height > limit[1]:
-            image.thumbnail(limit, Image.LANCZOS)
-        target = work / ("image.jpg" if jpeg else "image.png")
-        if jpeg:
-            image.convert("RGB").save(target, "JPEG", quality=85, optimize=True, progressive=True)
-            optimize_jpeg(target, True)
-        else:
-            image.save(target, "PNG", optimize=True)
-            optimize_png(target, True)
+        image = image.convert("RGBA")
+        if image.width > PREVIEW_SIZE[0] or image.height > PREVIEW_SIZE[1]:
+            image.thumbnail(PREVIEW_SIZE, Image.LANCZOS)
+        png = work / "preview.png"
+        if image.getchannel("A").getextrema()[0] < 255:
+            image.save(png, "PNG", optimize=True)
+            optimize_png(png, True)
+            return png.read_bytes(), png.suffix
+        flat = image.convert("RGB")
+        flat.save(png, "PNG", optimize=True)
+        optimize_png(png, True)
+        jpg = work / "preview.jpg"
+        flat.save(jpg, "JPEG", quality=80, optimize=True, progressive=True, subsampling="4:2:0")
+        optimize_jpeg(jpg, True)
+        best = min((png, jpg), key=lambda path: path.stat().st_size)
+        return best.read_bytes(), best.suffix
+
+
+def catalog_icon(source, work):
+    with Image.open(source) as image:
+        image.load()
+        image = image.convert("RGBA")
+        scale = min(ICON_SIZE / image.width, ICON_SIZE / image.height)
+        size = (max(1, round(image.width * scale)), max(1, round(image.height * scale)))
+        image = image.resize(size, Image.LANCZOS)
+        canvas = Image.new("RGBA", (ICON_SIZE, ICON_SIZE), (0, 0, 0, 0))
+        canvas.paste(image, ((ICON_SIZE - size[0]) // 2, (ICON_SIZE - size[1]) // 2))
+        target = work / "icon.png"
+        canvas.save(target, "PNG", optimize=True)
+        optimize_png(target, True)
     return target.read_bytes(), target.suffix
 
 
@@ -210,7 +228,7 @@ def build_theme(folder, out, catalog_ids):
         package_url, package_hash = publish(out, theme_id, package, ".zip")
         icon = None
         if (folder / "icon.png").is_file():
-            data, suffix = catalog_image(folder / "icon.png", work, ICON_SIZE)
+            data, suffix = catalog_icon(folder / "icon.png", work)
             icon, _ = publish(out, theme_id, data, suffix)
         previews = []
         preview_dir = folder / "preview"
@@ -218,7 +236,7 @@ def build_theme(folder, out, catalog_ids):
             for path in sorted(preview_dir.iterdir(), key=lambda p: p.name):
                 if path.suffix.lower() not in (".png", ".jpg", ".jpeg"):
                     continue
-                data, suffix = catalog_image(path, work, PREVIEW_SIZE)
+                data, suffix = catalog_preview(path, work)
                 url, _ = publish(out, theme_id, data, suffix)
                 previews.append(url)
     entry = {
