@@ -1,0 +1,57 @@
+name: deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: catalog
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-24.04
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+      AWS_DEFAULT_REGION: auto
+      AWS_REQUEST_CHECKSUM_CALCULATION: when_required
+      AWS_RESPONSE_CHECKSUM_VALIDATION: when_required
+      R2_ENDPOINT: https://${{ secrets.R2_ACCOUNT_ID }}.r2.cloudflarestorage.com
+      R2_BUCKET: ${{ secrets.R2_BUCKET }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends pngquant optipng jpegoptim
+          python -m pip install --disable-pip-version-check pillow
+
+      - name: Fetch published index
+        run: |
+          if ! aws s3 cp "s3://$R2_BUCKET/index.json" previous.json --endpoint-url "$R2_ENDPOINT" --only-show-errors; then
+            echo '{"themes": []}' > previous.json
+          fi
+
+      - name: Build catalog
+        id: build
+        run: python scripts/build_catalog.py --out dist --previous previous.json
+
+      - name: Upload to R2
+        if: steps.build.outputs.changed == 'true' || github.event_name == 'workflow_dispatch'
+        run: |
+          aws s3 sync dist/themes "s3://$R2_BUCKET/themes" --endpoint-url "$R2_ENDPOINT" --size-only --no-progress \
+            --cache-control "public, max-age=31536000, immutable"
+          aws s3 cp dist/index.json "s3://$R2_BUCKET/index.json" --endpoint-url "$R2_ENDPOINT" --no-progress \
+            --cache-control "public, max-age=60" --content-type "application/json; charset=utf-8"

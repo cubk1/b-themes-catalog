@@ -1,0 +1,82 @@
+{
+ "name": "Matrix",
+ "author": "cubk",
+ "base": "dark",
+ "colors": {
+  "accent": "#22E06B",
+  "shell": "#000000",
+  "sidebar": "#020A05D0",
+  "panel": "#010603C8",
+  "surface": "#06140BD8",
+  "surfaceRaised": "#0B2214",
+  "textPrimary": "#B8FFCC",
+  "textSecondary": "#86E0A0",
+  "textMuted": "#5DAA74",
+  "outline": "#1F5A33",
+  "outlineSoft": "#163F24",
+  "navHover": "#22E06B33",
+  "rowHover": "#22E06B22",
+  "onAccent": "#001A08"
+ },
+ "contrast": {
+  "guard": true,
+  "min": 4.5
+ },
+ "style": {
+  "radius": {
+   "scale": 0.4,
+   "window": 4
+  }
+ },
+ "layout": {
+  "preset": "sidebar"
+ },
+ "fonts": {
+  "text": {
+   "system": [
+    "Cascadia Mono",
+    "Consolas",
+    "monospace"
+   ]
+  },
+  "code": {
+   "system": [
+    "Cascadia Mono",
+    "Consolas",
+    "monospace"
+   ]
+  }
+ },
+ "paints": {
+  "window": {
+   "layers": [
+    {
+     "type": "shader",
+     "src": "rain.glsl",
+     "textures": [
+      "glyphs.png"
+     ],
+     "fallback": "#000000"
+    }
+   ]
+  },
+  "sidebar": {
+   "blur": 6,
+   "layers": [
+    {
+     "type": "solid",
+     "color": "sidebar"
+    }
+   ]
+  },
+  "content": {
+   "blur": 4,
+   "layers": [
+    {
+     "type": "solid",
+     "color": "panel"
+    }
+   ]
+  }
+ }
+}

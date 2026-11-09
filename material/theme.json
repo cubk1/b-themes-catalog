@@ -1,0 +1,81 @@
+{
+ "name": "Material",
+ "author": "cubk",
+ "version": "1.0.0",
+ "base": "system",
+ "script": "theme.js",
+ "accentPicker": "hue",
+ "settings": [
+  {
+   "id": "source",
+   "type": "select",
+   "label": "取色来源",
+   "options": [
+    "主色",
+    "背景图",
+    "系统强调色"
+   ],
+   "default": "主色"
+  },
+  {
+   "id": "variant",
+   "type": "select",
+   "label": "配色方案",
+   "options": [
+    "tonal-spot",
+    "vibrant",
+    "expressive",
+    "neutral",
+    "fidelity"
+   ],
+   "default": "tonal-spot"
+  }
+ ],
+ "contrast": {
+  "guard": true,
+  "min": 4.5
+ },
+ "style": {
+  "radius": {
+   "scale": 1.4
+  },
+  "outlines": false,
+  "rowDividers": false
+ },
+ "paints": {
+  "dialog": {
+   "layers": [
+    {
+     "type": "solid",
+     "color": "$containerHigh"
+    }
+   ]
+  },
+  "navActive": {
+   "layers": [
+    {
+     "type": "solid",
+     "color": "$secondaryContainer"
+    }
+   ]
+  }
+ },
+ "fonts": {
+  "text": {
+   "file": "fonts/NotoSansSC-wght.ttf",
+   "weight": 400
+  },
+  "bold": {
+   "file": "fonts/NotoSansSC-wght.ttf",
+   "weight": 500
+  },
+  "display": {
+   "file": "fonts/NotoSansSC-wght.ttf",
+   "weight": 400
+  },
+  "mono": {
+   "file": "fonts/NotoSansSC-wght.ttf",
+   "weight": 400
+  }
+ }
+}
