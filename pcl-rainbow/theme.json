@@ -1,0 +1,63 @@
+{
+ "name": "PCL2 滑稽彩",
+ "author": "cubk",
+ "options": {
+  "hue": 0,
+  "sat": 45,
+  "light": 0,
+  "delta": [
+   0,
+   0,
+   0
+  ],
+  "rainbow": true,
+  "cycle": true,
+  "seed": 200
+ },
+ "accentPicker": "none",
+ "paints": {
+  "titlebar": {
+   "layers": [
+    {
+     "id": "title",
+     "type": "gradient",
+     "angle": 90,
+     "dither": true,
+     "stops": [
+      [
+       "$t0",
+       0
+      ],
+      [
+       "$t1",
+       0.33
+      ],
+      [
+       "$t2",
+       0.67
+      ],
+      [
+       "$t3",
+       1
+      ]
+     ]
+    },
+    {
+     "id": "texture",
+     "type": "image",
+     "src": "title.png",
+     "fit": "cover",
+     "align": [
+      0,
+      0.5
+     ],
+     "opacity": 0.5
+    }
+   ]
+  }
+ },
+ "extends": "pcl",
+ "animate": {
+  "script": 12
+ }
+}
