@@ -1,0 +1,151 @@
+{
+ "name": "PCL2 Default",
+ "author": "cubk",
+ "options": {
+  "hue": 210,
+  "sat": 85,
+  "light": 0,
+  "delta": [
+   0,
+   0,
+   0
+  ]
+ },
+ "accentPicker": "none",
+ "paints": {
+  "titlebar": {
+   "layers": [
+    {
+     "id": "title",
+     "type": "gradient",
+     "angle": 90,
+     "dither": true,
+     "stops": [
+      [
+       "$t0",
+       0
+      ],
+      [
+       "$t1",
+       0.5
+      ],
+      [
+       "$t2",
+       1
+      ]
+     ]
+    }
+   ]
+  },
+  "window": {
+   "layers": [
+    {
+     "id": "colorful",
+     "type": "gradient",
+     "angle": 220,
+     "dither": true,
+     "stops": [
+      [
+       "$bg0",
+       0
+      ],
+      [
+       "$bg1",
+       0.4
+      ],
+      [
+       "$bg2",
+       1
+      ]
+     ]
+    }
+   ]
+  },
+  "content": {
+   "layers": [
+    {
+     "type": "gradient",
+     "angle": 90,
+     "stops": [
+      [
+       "#00000012",
+       0
+      ],
+      [
+       "#00000000",
+       0.009
+      ]
+     ]
+    }
+   ]
+  },
+  "navActive": {
+   "layers": [
+    {
+     "type": "solid",
+     "color": "#FFFFFF"
+    }
+   ]
+  },
+  "primaryButton": {
+   "layers": [
+    {
+     "type": "solid",
+     "color": "$c2"
+    },
+    {
+     "type": "solid",
+     "color": "#FFFFFF",
+     "inset": 1
+    }
+   ]
+  }
+ },
+ "base": "light",
+ "script": "pcl.js",
+ "contrast": {
+  "guard": true,
+  "min": 4.5,
+  "exclude": [
+   "textFaint",
+   "textMuted",
+   "onAccent"
+  ]
+ },
+ "style": {
+  "radius": {
+   "scale": 0.35,
+   "window": 6
+  }
+ },
+ "tuning": {
+  "logoFaintPlain": 0
+ },
+ "layout": {
+  "preset": "launch",
+  "innerRadius": 0,
+  "brand": {
+   "text": "PCL",
+   "icon": false,
+   "size": 20
+  },
+  "maximizeButton": false,
+  "topbar": {
+   "titleHeight": 48,
+   "navAlign": "center"
+  },
+  "launch": {
+   "columnWidth": 300,
+   "avatarSize": 48,
+   "avatarRadius": 0
+  }
+ },
+ "fonts": {
+  "text": {
+   "system": [
+    "Microsoft YaHei UI",
+    "Microsoft YaHei"
+   ]
+  }
+ }
+}
